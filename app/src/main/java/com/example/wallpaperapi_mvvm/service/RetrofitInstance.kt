@@ -11,13 +11,17 @@ class RetrofitInstance {
         const val BASE_URL = "https://api.unsplash.com/"
         const val API_KEY = "QYjZsHr97vrpdPaw9CQQpdm5BZDFiX0z76FNj77ZRIs"
 
-        fun getInstance() : Retrofit {
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+        var apiInterface : ApiInterface? = null
+        fun getInstance() : ApiInterface {
+            if (apiInterface == null) {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                apiInterface = retrofit.create(ApiInterface::class.java)
+            }
+            return apiInterface!!
         }
-
 
     }
 
