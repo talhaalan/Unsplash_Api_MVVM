@@ -52,24 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         val retrofitInstance = RetrofitInstance.getInstance()
         val mainRepository = MainRepository(retrofitInstance)
-
-
-
-        /*
-        val lazyValue : String by lazy {
-            println("result : computed!")
-            "Hello"
-        }
-
-            println("result1 : " + lazyValue)
-            println("result2 : " + lazyValue)
-         */
-
-        var student = Student()
-        student.firstName = "Talha"
-        student.lastName = "Alan"
-        println(student)
-
+        
         // 1
         //photoViewModel = ViewModelProvider(this,ViewModelFactory(mainRepository)).get(PhotoViewModel::class.java)
         // 2
@@ -104,26 +87,5 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getAll()
 
-    }
-
-    class Student {
-        var firstName : String? by NameDelegate()
-        var lastName : String? by NameDelegate()
-
-        override fun toString(): String {
-            return "$firstName $lastName"
-        }
-
-    }
-    class NameDelegate {
-        var formattedValue : String? = null
-        operator fun setValue(thisRef: Any?,property : KProperty<*>,value : String?) {
-            if (value != null && value.length >= 4) {
-                formattedValue = value.trim().uppercase()
-            }
-        }
-        operator fun getValue(thisRef : Any?,property : KProperty<*>): String? {
-            return formattedValue
-        }
     }
 }
