@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         val retrofitInstance = RetrofitInstance.getInstance()
         val mainRepository = MainRepository(retrofitInstance)
-        
+
         // 1
         //photoViewModel = ViewModelProvider(this,ViewModelFactory(mainRepository)).get(PhotoViewModel::class.java)
         // 2
