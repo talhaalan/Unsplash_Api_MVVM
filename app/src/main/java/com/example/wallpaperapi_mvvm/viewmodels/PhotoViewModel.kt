@@ -1,6 +1,8 @@
 package com.example.wallpaperapi_mvvm.viewmodels
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.wallpaperapi_mvvm.models.Photo
 import com.example.wallpaperapi_mvvm.models.Search
@@ -11,6 +13,8 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.Executors
+import kotlin.reflect.KProperty
 
 class PhotoViewModel constructor(private val mainRepository: MainRepository) : ViewModel() {
 
@@ -19,6 +23,7 @@ class PhotoViewModel constructor(private val mainRepository: MainRepository) : V
     var job : Job? = null
 
     fun getAll() {
+
         job = CoroutineScope(Dispatchers.IO).launch {
             val response = mainRepository.getAllPhoto()
             withContext(Dispatchers.Main) {
@@ -29,6 +34,7 @@ class PhotoViewModel constructor(private val mainRepository: MainRepository) : V
             }
         }
     }
+
     override fun onCleared() {
         super.onCleared()
         job?.cancel()

@@ -12,3 +12,4 @@ data class Photo (
     val urls: Urls,
     //val links: Links,
     val user: User)
+

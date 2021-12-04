@@ -3,12 +3,15 @@ package com.example.wallpaperapi_mvvm.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +28,8 @@ import com.example.wallpaperapi_mvvm.viewmodels.PhotoViewModel
 import com.example.wallpaperapi_mvvm.viewmodels.ViewModelFactory
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,24 +53,77 @@ class MainActivity : AppCompatActivity() {
         val retrofitInstance = RetrofitInstance.getInstance()
         val mainRepository = MainRepository(retrofitInstance)
 
-        photoViewModel = ViewModelProvider(this,ViewModelFactory(mainRepository)).get(PhotoViewModel::class.java)
 
-        photoViewModel.photoList.observe(this, Observer {
-            adapter?.setPhoto(it)
-            for (i in it) {
-                println("list: " + i.urls.full)
+
+        /*
+        val lazyValue : String by lazy {
+            println("result : computed!")
+            "Hello"
+        }
+
+            println("result1 : " + lazyValue)
+            println("result2 : " + lazyValue)
+         */
+
+        var student = Student()
+        student.firstName = "Talha"
+        student.lastName = "Alan"
+        println(student)
+
+        // 1
+        //photoViewModel = ViewModelProvider(this,ViewModelFactory(mainRepository)).get(PhotoViewModel::class.java)
+        // 2
+        /*
+        val viewModel : PhotoViewModel by viewModels {
+            ViewModelFactory(mainRepository)
+        }
+        */
+        // 3
+        val viewModel : PhotoViewModel by lazy {
+            ViewModelProvider(viewModelStore,ViewModelFactory(mainRepository)).get(PhotoViewModel::class.java)
+        }
+
+        viewModel.photoList.observe(this, Observer {
+            it?.let {
+                adapter?.setPhoto(it)
+                for (i in it) {
+                    //println("list: " + i.urls.full)
+                }
             }
+
         })
 
-        photoViewModel.isLoading.observe(this, Observer {
+        viewModel.isLoading.observe(this, Observer {
             if (it) {
+                binding.recyclerView.visibility = View.GONE
                 binding.progressBar.visibility = View.VISIBLE
             }else {
                 binding.progressBar.visibility = View.GONE
             }
         })
-        photoViewModel.getAll()
+
+        viewModel.getAll()
 
     }
 
+    class Student {
+        var firstName : String? by NameDelegate()
+        var lastName : String? by NameDelegate()
+
+        override fun toString(): String {
+            return "$firstName $lastName"
+        }
+
+    }
+    class NameDelegate {
+        var formattedValue : String? = null
+        operator fun setValue(thisRef: Any?,property : KProperty<*>,value : String?) {
+            if (value != null && value.length >= 4) {
+                formattedValue = value.trim().uppercase()
+            }
+        }
+        operator fun getValue(thisRef : Any?,property : KProperty<*>): String? {
+            return formattedValue
+        }
+    }
 }
