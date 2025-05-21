@@ -9,7 +9,7 @@ class RetrofitInstance {
     companion object {
 
         const val BASE_URL = "https://api.unsplash.com/"
-        const val API_KEY = "QYjZsHr97vrpdPaw9CQQpdm5BZDFiX0z76FNj77ZRIs"
+        const val API_KEY = ""
 
         var apiInterface : ApiInterface? = null
         fun getInstance() : ApiInterface {
